@@ -22,13 +22,13 @@ SELECT hp.player_id, COUNT(DISTINCT hp.hand_id) AS hands_played, # Count all uni
 
 FROM hand_players AS hp
 
-LEFT JOIN actions AS a -- Left join will keep the hands counted  with no qualifying action (everyone folds pre, BB walks) 
+LEFT JOIN actions AS a -- Left join will keep the hands counted  with no qualifying action (ie: everyone folds pre, BB walks) 
     ON hp.hand_id = a.hand_id
    AND a.actor = CONCAT('p', hp.position_index) 
     -- Each player-seat row gets matched to that player's own actions in that hand via the concat
     -- Non-matching seats will keep their row w/ NULL action columns
-GROUP BY hp.player_id 
+GROUP BY hp.player_id -- Grouping by player
 
-HAVING COUNT(DISTINCT hp.hand_id) >= 100 
+HAVING COUNT(DISTINCT hp.hand_id) >= 100 -- Players with total hand count over 100
 
 ORDER BY hands_played DESC;
